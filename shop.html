@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HydraGlow Marketplace — Accessories</title>
+  <meta name="description" content="Shop HydraGlow accessories — lids, sleeves, replacement parts. Add to cart, edit quantities, and checkout. Fully client‑side.">
+  <style>
+    :root{
+      --bg:#f4f7fb;--text:#0b1533;--muted:#6c7a90;--card:#ffffff;--line:#e7ecf3;
+      --accent1:#00d2ff;--accent2:#0066ff;--radius:14px;--ease:cubic-bezier(.2,.9,.3,1);
+      --maxw:1200px;--shadow:0 12px 30px rgba(10,34,76,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text);}
+    img{display:block;max-width:100%}
+    a{text-decoration:none;color:inherit}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);backdrop-filter:saturate(1.1) blur(6px)}
+    .container{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:grid;place-items:center;color:#041033;box-shadow:0 8px 22px rgba(0,102,255,.18)}
+    .back{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer}
+
+    /* Controls */
+    .controls{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;margin:18px 0}
+    .search input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);}
+    .sort select{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .filters{display:flex;gap:10px;flex-wrap:wrap}
+    .chip{border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:#fff;color:var(--muted);cursor:pointer;font-weight:600}
+    .chip.active{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#041033;border-color:transparent}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:transform .25s var(--ease), box-shadow .25s var(--ease)}
+    .card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(10,34,76,.12)}
+    .imgbox{position:relative;height:170px;overflow:hidden}
+    .imgbox img{width:100%;height:100%;object-fit:cover;transform:scale(1.02);transition:transform .4s var(--ease)}
+    .card:hover .imgbox img{transform:scale(1.07)}
+    .body{padding:14px}
+    .title{margin:0 0 6px;font-size:16px;font-weight:700}
+    .muted{color:var(--muted);font-size:13px}
+    .price{margin:8px 0 12px;font-weight:800}
+    .qtyrow{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+    .qtyrow input{width:64px;padding:8px;border:1px solid var(--line);border-radius:8px}
+    .add{background:linear-gradient(90deg,var(--accent1),var(--accent2));border:none;color:#041033;font-weight:800;padding:10px 14px;border-radius:10px;cursor:pointer}
+
+    /* Cart drawer */
+    .cart{position:fixed;right:18px;bottom:18px;width:320px;max-height:70vh;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 30px 60px rgba(10,34,76,.18);display:flex;flex-direction:column;overflow:hidden}
+    .cart header{position:static;border-bottom:1px solid var(--line)}
+    .cart .head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+    .cart-items{overflow:auto;padding:10px}
+    .cart-empty{padding:18px;text-align:center;color:var(--muted)}
+    .cart-item{display:grid;grid-template-columns:54px 1fr auto;gap:10px;align-items:center;border-bottom:1px dashed var(--line);padding:10px 0}
+    .cart-item img{width:54px;height:54px;object-fit:cover;border-radius:10px}
+    .cart-item .name{font-weight:700;font-size:13px}
+    .cart-item .meta{font-size:12px;color:var(--muted)}
+    .cart-item .qty{display:flex;gap:6px;align-items:center}
+    .cart-item .qty input{width:46px;padding:6px;border:1px solid var(--line);border-radius:8px}
+    .cart-item .remove{background:none;border:none;color:#d33;cursor:pointer}
+    .cart-footer{border-top:1px solid var(--line);padding:12px 14px}
+    .row{display:flex;align-items:center;justify-content:space-between;margin:6px 0}
+    .checkout{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent1),var(--accent2));font-weight:800;color:#041033;cursor:pointer}
+
+    /* Checkout Modal */
+    .modal{position:fixed;inset:0;background:rgba(4,16,51,.45);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal.open{display:flex}
+    .sheet{width:min(760px,95vw);background:#fff;border-radius:18px;box-shadow:0 50px 120px rgba(10,34,76,.3);overflow:hidden;display:grid;grid-template-columns:1.2fr .8fr}
+    .sheet header{position:static;border-bottom:1px solid var(--line)}
+    .sheet .col{padding:16px}
+    .field{display:grid;gap:6px;margin:10px 0}
+    .field input, .field textarea{padding:12px;border:1px solid var(--line);border-radius:10px}
+    .place{padding:12px 14px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent1),var(--accent2));font-weight:800;color:#041033;cursor:pointer;width:100%}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .controls{grid-template-columns:1fr;gap:10px}
+      .sheet{grid-template-columns:1fr}
+      .cart{left:18px;right:18px;width:auto}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand"><div class="logo">HG</div>HydraGlow Shop</div>
+      <button class="back" onclick="location.href='index.html'">← Back to Home</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 style="margin:24px 0 6px">Accessories</h1>
+    <p class="muted" style="margin:0 0 18px">Explore lids, sleeves, and replacement parts for your HydraGlow.</p>
+
+    <div class="controls">
+      <div class="search"><input id="search" type="search" placeholder="Search accessories (e.g., lid, sleeve, replacement)…" /></div>
+      <div class="filters" id="filters">
+        <button class="chip active" data-cat="all">All</button>
+        <button class="chip" data-cat="Lids">Lids</button>
+        <button class="chip" data-cat="Sleeves">Sleeves</button>
+        <button class="chip" data-cat="Replacement">Replacement</button>
+      </div>
+      <div class="sort"><select id="sort">
+        <option value="featured">Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="rating-desc">Rating: Top Rated</option>
+      </select></div>
+    </div>
+
+    <div id="grid" class="grid" aria-live="polite"></div>
+  </main>
+
+  <!-- Cart Drawer -->
+  <aside class="cart" aria-label="Cart">
+    <header>
+      <div class="head">
+        <strong>Cart</strong>
+        <button class="back" onclick="Cart.clear()">Clear</button>
+      </div>
+    </header>
+    <div id="cart-items" class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="row"><span class="muted">Items</span><span id="cart-count">0</span></div>
+      <div class="row"><span class="muted">Subtotal</span><strong id="cart-sub">$0.00</strong></div>
+      <button class="checkout" id="checkout">Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Checkout Modal -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+    <div class="sheet">
+      <header>
+        <div class="head container" style="padding:12px 16px">
+          <strong id="checkout-title">Checkout</strong>
+          <button class="back" onclick="Modal.close()">Close</button>
+        </div>
+      </header>
+      <div class="col">
+        <h3 style="margin:10px 0">Shipping</h3>
+        <div class="field"><label for="name">Full name</label><input id="name" required placeholder="Jane Doe"></div>
+        <div class="field"><label for="email">Email</label><input id="email" type="email" required placeholder="jane@example.com"></div>
+        <div class="field"><label for="addr">Address</label><textarea id="addr" rows="3" required placeholder="Street, City, Country"></textarea></div>
+        <div class="field"><label for="notes">Notes (optional)</label><textarea id="notes" rows="2" placeholder="Delivery instructions"></textarea></div>
+        <button class="place" onclick="placeOrder()">Place Order</button>
+        <p class="muted" style="font-size:12px;margin-top:8px">Demo checkout — no payment collected.</p>
+      </div>
+      <div class="col" style="border-left:1px solid var(--line)">
+        <h3 style="margin:10px 0">Order Summary</h3>
+        <div id="summary"></div>
+        <div class="row" style="margin-top:12px"><span class="muted">Subtotal</span><strong id="sum-sub">$0.00</strong></div>
+        <div class="row"><span class="muted">Shipping</span><strong>FREE</strong></div>
+        <div class="row"><span class="muted">Total</span><strong id="sum-total">$0.00</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="container" style="margin:50px auto;text-align:center;color:var(--muted);font-size:13px">
+    © <span id="year"></span> HydraGlow — Accessories Marketplace
+  </footer>
+
+  <script>
+    // ---------- Data ----------
+    const PRODUCTS = [
+      {id:'lid-orbiter', name:'Orbiter Drinking Lid', price:17.95, rating:4.8, cat:'Lids', img:{
+        webp:'https://images.unsplash.com/photo-1560008511-11c63416e52b?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3&fm=webp',
+        jpg :'https://images.unsplash.com/photo-1560008511-11c63416e52b?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3'
+      }},
+      {id:'sleeve-neoprene', name:'Neoprene Sleeve (Sky)', price:19.95, rating:4.7, cat:'Sleeves', img:{
+        webp:'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3&fm=webp',
+        jpg :'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3'
+      }},
+      {id:'jar-16oz', name:'Replacement Jar (16 oz)', price:14.95, rating:4.6, cat:'Replacement', img:{
+        webp:'https://images.unsplash.com/photo-1600272008408-2ac35f5c2bd7?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3&fm=webp',
+        jpg :'https://images.unsplash.com/photo-1600272008408-2ac35f5c2bd7?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3'
+      }},
+      {id:'lid-flip', name:'Flip Lid (Black)', price:15.95, rating:4.5, cat:'Lids', img:{
+        webp:'https://images.unsplash.com/photo-1503342452485-86f7f3d6a5f4?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3&fm=webp',
+        jpg :'https://images.unsplash.com/photo-1503342452485-86f7f3d6a5f4?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3'
+      }},
+      {id:'sleeve-graphite', name:'Graphite Sleeve', price:21.95, rating:4.9, cat:'Sleeves', img:{
+        webp:'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3&fm=webp',
+        jpg :'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3'
+      }},
+      {id:'gasket-pack', name:'Gasket Pack (3x)', price:9.95, rating:4.4, cat:'Replacement', img:{
+        webp:'https://images.unsplash.com/photo-1595198993227-9b4d8a5b2665?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3&fm=webp',
+        jpg :'https://images.unsplash.com/photo-1595198993227-9b4d8a5b2665?q=80&w=1200&auto=format&fit=crop&crop=center&ixlib=rb-4.0.3'
+      }},
+    ];
+
+    const fmt = n => `$${n.toFixed(2)}`;
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ---------- Render Grid ----------
+    function productCard(p){
+      return `
+      <article class="card" data-id="${p.id}" data-name="${p.name.toLowerCase()}" data-cat="${p.cat}" data-price="${p.price}" data-rating="${p.rating}">
+        <div class="imgbox">
+          <picture>
+            <source srcset="${p.img.webp}" type="image/webp">
+            <img src="${p.img.jpg}" alt="${p.name}" loading="lazy">
+          </picture>
+        </div>
+        <div class="body">
+          <h4 class="title">${p.name}</h4>
+          <div class="muted">${p.cat} • ★ ${p.rating}</div>
+          <div class="price">${fmt(p.price)}</div>
+          <div class="qtyrow"><label class="muted" for="qty-${p.id}">Qty</label>
+            <input id="qty-${p.id}" type="number" min="1" value="1"></div>
+          <button class="add" onclick="Cart.add('${p.id}', getQty('${p.id}'))">Add to Cart</button>
+        </div>
+      </article>`;
+    }
+
+    function render(products){
+      $('#grid').innerHTML = products.map(productCard).join('');
+    }
+
+    // ---------- Filters, Search, Sort ----------
+    function currentProducts(){ return PRODUCTS.slice(); }
+
+    function applyControls(){
+      const q = $('#search').value.trim().toLowerCase();
+      const activeCat = $$('.chip').find(c=>c.classList.contains('active'))?.dataset.cat || 'all';
+      const sort = $('#sort').value;
+      let list = currentProducts();
+      if(activeCat !== 'all') list = list.filter(p=>p.cat===activeCat);
+      if(q) list = list.filter(p=>p.name.toLowerCase().includes(q));
+      if(sort==='price-asc') list.sort((a,b)=>a.price-b.price);
+      if(sort==='price-desc') list.sort((a,b)=>b.price-a.price);
+      if(sort==='rating-desc') list.sort((a,b)=>b.rating-a.rating);
+      render(list);
+    }
+
+    $('#search').addEventListener('input', applyControls);
+    $('#sort').addEventListener('change', applyControls);
+    $$('#filters .chip').forEach(ch=>ch.addEventListener('click',()=>{
+      $$('#filters .chip').forEach(x=>x.classList.remove('active'));
+      ch.classList.add('active');
+      applyControls();
+    }));
+
+    // initial render
+    applyControls();
+
+    // helper for qty input
+    window.getQty = (id)=>{
+      const el = document.getElementById('qty-'+id);
+      const v = parseInt(el?.value||'1',10);
+      return Math.max(1, isNaN(v)?1:v);
+    };
+
+    // ---------- Cart Logic ----------
+    const Storage = {
+      key:'hydraglow_cart',
+      read(){ try{ return JSON.parse(localStorage.getItem(this.key)||'{}'); }catch{ return {}; } },
+      write(data){ localStorage.setItem(this.key, JSON.stringify(data)); }
+    };
+
+    const Cart = {
+      data: Storage.read(),
+      add(id, qty=1){
+        const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
+        this.data[id] = this.data[id] || { ...p, qty:0 };
+        this.data[id].qty += qty;
+        Storage.write(this.data); this.render();
+      },
+      update(id, qty){
+        if(!this.data[id]) return; this.data[id].qty = Math.max(1, qty|0); Storage.write(this.data); this.render();
+      },
+      remove(id){ delete this.data[id]; Storage.write(this.data); this.render(); },
+      clear(){ this.data = {}; Storage.write(this.data); this.render(); },
+      items(){ return Object.values(this.data); },
+      subtotal(){ return this.items().reduce((s,i)=>s + i.price*i.qty, 0); },
+      count(){ return this.items().reduce((s,i)=>s + i.qty, 0); },
+      render(){
+        const box = $('#cart-items');
+        const items = this.items();
+        if(!items.length){ box.innerHTML = `<div class="cart-empty">Your cart is empty.</div>`; }
+        else{
+          box.innerHTML = items.map(i=>`
+            <div class="cart-item">
+              <img src="${i.img.jpg}" alt="${i.name}">
+              <div>
+                <div class="name">${i.name}</div>
+                <div class="meta">${fmt(i.price)} • ${i.cat}</div>
+                <div class="qty"><label class="muted">Qty</label>
+                  <input type="number" min="1" value="${i.qty}" onchange="Cart.update('${i.id}', this.value)">
+                  <button class="remove" onclick="Cart.remove('${i.id}')">Remove</button>
+                </div>
+              </div>
+              <div style="font-weight:800">${fmt(i.price*i.qty)}</div>
+            </div>`).join('');
+        }
+        $('#cart-count').textContent = this.count();
+        $('#cart-sub').textContent = fmt(this.subtotal());
+      }
+    };
+
+    window.Cart = Cart; // expose for inline handlers
+    Cart.render();
+
+    // Checkout modal
+    const Modal = {
+      open(){ $('#modal').classList.add('open'); this.renderSummary(); },
+      close(){ $('#modal').classList.remove('open'); },
+      renderSummary(){
+        const list = Cart.items();
+        $('#summary').innerHTML = list.map(i=>`
+          <div class="row"><span class="muted">${i.qty} × ${i.name}</span><strong>${fmt(i.price*i.qty)}</strong></div>
+        `).join('') || '<div class="muted">No items.</div>';
+        $('#sum-sub').textContent = fmt(Cart.subtotal());
+        $('#sum-total').textContent = fmt(Cart.subtotal());
+      }
+    };
+    window.Modal = Modal;
+
+    document.getElementById('checkout').addEventListener('click', ()=>{
+      if(!Cart.items().length){ alert('Your cart is empty.'); return; }
+      Modal.open();
+    });
+
+    function placeOrder(){
+      // Simple demo: validate basic fields
+      const name=$('#name').value.trim(), email=$('#email').value.trim(), addr=$('#addr').value.trim();
+      if(!name||!email||!addr){ alert('Please fill name, email and address.'); return; }
+      // Simulate order number
+      const orderId = 'HG-' + Math.random().toString(36).slice(2,8).toUpperCase();
+      alert(`Order placed!\n\nOrder ID: ${orderId}\nWe emailed a confirmation to ${email}.`);
+      Cart.clear(); Modal.close();
+    }
+
+    // minor niceties
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') Modal.close(); });
+  </script>
+</body>
+</html>

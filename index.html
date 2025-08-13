@@ -182,7 +182,9 @@
       </nav>
 
       <div>
+    <a href="shop.html">    
         <button class="cta-btn" id="buy-cta">Order Now</button>
+    </a>
       </div>
     </div>
   </header>
@@ -199,8 +201,10 @@
           <h1 class="hero-title">Stay Hydrated. Stay Smart.</h1>
           <p class="hero-sub">HydraGlow is the self-cleaning, glow-reminding smart bottle that keeps you healthy on the go. UV cleaning, reminder glow, and premium insulation.</p>
           <div class="hero-actions">
+        <a href="shop.html">
             <button class="cta-btn" id="hero-cta">Order Yours Now</button>
             <button class="cta-btn" id="learn-more" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)">Learn More</button>
+        </a>
           </div>
 
           <div style="margin-top:20px" class="trust">
@@ -297,28 +301,12 @@
           <p>Order your HydraGlow bottle today and get an exclusive launch discount.</p>
         </div>
         <div>
+        <a href="shop.html">
           <button class="cta-btn" id="final-cta">Buy Now</button>
+        </a>
         </div>
       </div>
     </section>
-
-    <!-- modify this form HTML and place wherever you want your form -->
-<form
-  action="https://formspree.io/f/xwpezakq"
-  method="POST"
-  enctype="multipart/form-data"
->
-  <label>
-    Your email:
-    <input type="email" name="email">
-  </label>
-  <label>
-    Your file:
-    <input type="file" name="upload">
-  </label>
-  <button type="submit">Send</button>
-</form>
-    
   </main>
 
   <footer>
@@ -462,6 +450,32 @@
     })();
 
   </script>
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+QnFfC4D4STiznoHcE/tRkT7M3z5Ulb6x5b3HzF2" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9mM56vFgzT0zB7wAd5a40WR1aRFL00Oe7k78R4AVxwB3x0OXlx" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq7xMblQ2zmo1PHU5FzBo1lJ4b5XlHt5NMQgzTAuL0T4Qxpe2L" crossorigin="anonymous"></script>
+  <script>
+      document.querySelector('#contact-form').addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent the default form submission
+          fetch(this.action, {
+              method: this.method,
+              body: new FormData(this)
+          })
+          .then(response => {
+              if (response.ok) {
+                  // Show the modal
+                  var myModal = new bootstrap.Modal(document.getElementById('successModal'));
+                  myModal.show();
+                  this.reset(); // Optionally reset the form
+              } else {
+                  alert('Something went wrong. Please try again.');
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Something went wrong. Please try again.');
+          });
+      });
+  </script>
 </body>
 </html>
-
