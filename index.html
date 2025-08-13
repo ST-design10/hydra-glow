@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HydraGlow — Immersive Product Landing</title>
+  <meta name="description" content="HydraGlow — self-cleaning, glow-reminding smart bottle. Immersive interactive landing page." />
+  <style>
+    /* ---------- Variables & Base ---------- */
+
+    .product-card {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Or whatever height you want the panel to be */
+  overflow: hidden;
+}
+
+.product-stage {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.product-card {
+  width: 400px;        /* Set desired panel width */
+  height: 500px;       /* Set desired panel height */
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.product-card .product-image {
+  width: 400%;
+  height: 500%;
+  object-fit: cover;   /* Ensures image fills the panel */
+  display: block;
+}
+
+.product-card picture,
+.product-card {
+  max-width: 1200px;
+}
+
+.product-card img {
+  width: 400%;
+  height: 500%;
+  object-fit: cover;
+  display: block;
+}
+
+    :root{
+      --bg:#071126;
+      --card:#0b1730;
+      --accent1:#00d2ff;
+      --accent2:#0066ff;
+      --muted:#9fb2cc;
+      --glass: rgba(255,255,255,0.06);
+      --radius:16px;
+      --maxw:1200px;
+      --ease:cubic-bezier(.2,.9,.3,1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,var(--bg) 0%, #071430 60%);
+      color:#eef6ff; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none}
+    img{display:block;max-width:100%}
+
+    /* ---------- Layout ---------- */
+    .container{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg, rgba(7,20,38,0.4), rgba(7,20,38,0.15));backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,0.03)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:12px;align-items:center;font-weight:700}
+    .logo{
+      width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#041033;font-weight:800;font-size:18px;
+      box-shadow:0 6px 18px rgba(0, 98, 255, 0.15);
+    }
+    nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+    nav button{background:none;border:none;color:var(--muted);cursor:pointer;font-weight:600;padding:8px;border-radius:8px;transition:all .18s var(--ease)}
+    nav button:hover{color:#fff;transform:translateY(-3px)}
+
+    .cta-btn{background:linear-gradient(90deg,var(--accent1),var(--accent2));padding:10px 16px;border-radius:12px;color:#041033;font-weight:700;border:none;cursor:pointer;box-shadow:0 12px 30px rgba(0,110,255,0.18)}
+    .cta-btn:active{transform:translateY(1px)}
+
+    /* ---------- Hero ---------- */
+    .hero{min-height:88vh;display:grid;align-items:center;gap:32px;position:relative;overflow:hidden;padding:40px 0}
+    .hero-grid{display:grid;grid-template-columns:1fr 460px;gap:36px;align-items:center}
+    .hero-title{font-size:clamp(28px,5vw,48px);line-height:1.02;font-weight:800;margin:0 0 16px;color:linear-gradient}
+    .hero-sub{color:var(--muted);margin-bottom:20px;max-width:60ch}
+    .hero-actions{display:flex;gap:12px;align-items:center}
+    .trust{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:13px}
+    .star{color:#ffd166;font-weight:800}
+
+    /* Parallax product card */
+    .product-stage{
+      width:100%;height:520px;max-width:460px;border-radius:26px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);position:relative;overflow:visible;padding:22px;box-shadow:0 20px 60px rgba(6,20,40,0.6);
+    }
+    .product-card{
+      position:relative;width:100%;height:100%;border-radius:18px;background:linear-gradient(135deg,#061426, #083051);
+      overflow:hidden;display:flex;align-items:center;justify-content:center;transform-style:preserve-3d;transition:transform .18s var(--ease);
+    }
+    .product-card img{width:70%;height:auto;transform:translateZ(30px) rotateZ(-6deg);filter:drop-shadow(0 30px 40px rgba(0,0,0,0.5))}
+    .glow{
+      position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:.6;
+      background:radial-gradient(600px 200px at 10% 20%, rgba(0,210,255,.12), transparent 10%),
+                 radial-gradient(500px 200px at 90% 80%, rgba(0,102,255,.09), transparent 12%);
+      transform:translateZ(-40px) scale(1.05);
+    }
+
+    /* ---------- Features / how it works ---------- */
+    section.features{padding:72px 0}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .feature{
+      background:var(--card);padding:22px;border-radius:14px;border:1px solid rgba(255,255,255,0.03);transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+    }
+    .feature:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(2,18,56,0.6)}
+    .feature h4{margin:0 0 8px}
+    .feature p{color:var(--muted);margin:0;font-size:14px}
+
+    /* Timeline */
+    .timeline{display:flex;flex-direction:column;gap:18px;margin-top:28px}
+    .step{display:flex;gap:16px;align-items:flex-start}
+    .step .num{min-width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:grid;place-items:center;font-weight:800;color:#041033}
+    .step .desc h5{margin:0 0 6px}
+
+    /* ---------- Reviews Carousel ---------- */
+    .reviews{padding:72px 0}
+    .review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .review{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .review p{color:var(--muted);font-size:14px}
+
+    /* ---------- FAQ ---------- */
+    .faq{padding:72px 0}
+    details{background:var(--card);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);color:inherit}
+    summary{cursor:pointer;font-weight:700}
+
+    /* ---------- CTA ---------- */
+    .big-cta{padding:54px;border-radius:18px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .cta-copy h3{margin:0;font-size:20px}
+    .cta-copy p{color:var(--muted);margin:6px 0 0;font-size:14px}
+
+    /* ---------- Footer ---------- */
+    footer{padding:30px 0;text-align:center;color:var(--muted);font-size:14px}
+
+    /* ---------- Small screens ---------- */
+    @media (max-width:900px){
+      .hero-grid{grid-template-columns:1fr;justify-items:center}
+      .product-stage{max-width:360px;height:420px}
+      .features-grid{grid-template-columns:1fr}
+      .review-grid{grid-template-columns:1fr}
+      nav ul{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo" aria-hidden>HG</div>
+        <div>
+          <div style="font-size:15px">HydraGlow</div>
+          <div style="font-size:12px;color:var(--muted)">Smart water bottle</div>
+        </div>
+      </div>
+
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><button data-scroll="hero">Home</button></li>
+          <li><button data-scroll="features">Features</button></li>
+          <li><button data-scroll="reviews">Reviews</button></li>
+          <li><button data-scroll="faq">FAQ</button></li>
+        </ul>
+      </nav>
+
+      <div>
+        <button class="cta-btn" id="buy-cta">Order Now</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section id="hero" class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+            <div class="star">★★★★★</div>
+            <div style="color:var(--muted);font-weight:600;font-size:13px">4.9 — 2,341 reviews</div>
+          </div>
+          <h1 class="hero-title">Stay Hydrated. Stay Smart.</h1>
+          <p class="hero-sub">HydraGlow is the self-cleaning, glow-reminding smart bottle that keeps you healthy on the go. UV cleaning, reminder glow, and premium insulation.</p>
+          <div class="hero-actions">
+            <button class="cta-btn" id="hero-cta">Order Yours Now</button>
+            <button class="cta-btn" id="learn-more" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)">Learn More</button>
+          </div>
+
+          <div style="margin-top:20px" class="trust">
+            <div style="display:flex;gap:8px;align-items:center"><img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Forbes_logo.svg" alt="" style="height:18px;opacity:.85" loading="lazy"></div>
+            <div style="font-size:13px;color:var(--muted)">As seen on Forbes • Wired</div>
+          </div>
+        </div>
+
+        <div class="product-stage" aria-hidden>
+            <div class="product-card" id="product-card">
+              <picture>
+                <source type="image/webp" srcset="bottle glow image.jpeg">
+                <img src="bottle glow image.jpeg" alt="HydraGlow product image" loading="lazy">
+              </picture>
+              <div class="glow" id="glow"></div>
+            </div>
+          </div>
+          
+    </section>                               
+
+    <!-- FEATURES -->
+    <section id="features" class="features">
+      <div class="container">
+        <h2 style="text-align:center;font-size:26px;margin-bottom:10px">Why HydraGlow?</h2>
+        <p style="text-align:center;color:var(--muted);margin-bottom:24px">Handy features designed to keep you hydrated, healthy and on the move.</p>
+
+        <div class="features-grid" id="features-grid">
+          <div class="feature" data-tilt>
+            <h4>Self-Cleaning UV Cap</h4>
+            <p>Kills 99.9% of bacteria in 60 seconds — automatic daily cycles or on-demand cleaning.</p>
+          </div>
+          <div class="feature" data-tilt>
+            <h4>Smart Hydration Reminders</h4>
+            <p>Glows to remind you to drink and gently vibrates for important alerts.</p>
+          </div>
+          <div class="feature" data-tilt>
+            <h4>Temperature Control</h4>
+            <p>Double-walled vacuum insulation — keeps drinks cold 24h / hot 12h.</p>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="step">
+            <div class="num">1</div>
+            <div class="desc"><h5>Charge Once, Use for Weeks</h5><p class="muted">USB-C quick charge with long standby life.</p></div>
+          </div>
+          <div class="step">
+            <div class="num">2</div>
+            <div class="desc"><h5>Fill & Drink Normally</h5><p class="muted">No special liquids — coffee, tea, or water.</p></div>
+          </div>
+          <div class="step">
+            <div class="num">3</div>
+            <div class="desc"><h5>Let the UV Light Clean Itself</h5><p class="muted">Automatic cap cycles prevent build-up.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section id="reviews" class="reviews">
+      <div class="container">
+        <h3 style="text-align:center;font-size:22px;margin-bottom:18px">What customers say</h3>
+        <div class="review-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+          <div class="review">
+            <strong>Amanda R.</strong>
+            <p>"I drink more water now because it glows every hour. Super clean and great design."</p>
+          </div>
+          <div class="review">
+            <strong>Jason K.</strong>
+            <p>"Self-cleaning is insane. I used to worry about mold in my old bottle."</p>
+          </div>
+          <div class="review">
+            <strong>Priya S.</strong>
+            <p>"Battery lasts ages — stylish and actually useful."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="faq">
+      <div class="container" style="max-width:900px;margin:auto">
+        <h3 style="text-align:center;font-size:22px;margin-bottom:18px">FAQs</h3>
+        <details><summary>How long does the battery last?</summary><p style="color:var(--muted);margin-top:8px">Typical use: 2–3 weeks. Heavy UV cycles reduce runtime.</p></details>
+        <details style="margin-top:12px"><summary>Is it safe for kids?</summary><p style="color:var(--muted);margin-top:8px">Yes — UV system is enclosed and won’t activate while cap is open.</p></details>
+        <details style="margin-top:12px"><summary>Can I turn off the glow reminders?</summary><p style="color:var(--muted);margin-top:8px">Yes — toggle reminders via the device app or on-device button.</p></details>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="padding:40px 0">
+      <div class="container big-cta">
+        <div class="cta-copy">
+          <h3>Ready to glow smarter?</h3>
+          <p>Order your HydraGlow bottle today and get an exclusive launch discount.</p>
+        </div>
+        <div>
+          <button class="cta-btn" id="final-cta">Buy Now</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div style="margin-bottom:10px;color:var(--muted)">Join our newsletter for hydration tips & offers</div>
+      <small>&copy; <span id="year"></span> HydraGlow — All rights reserved.</small>
+    </div>
+  </footer>
+
+  <script>
+    /* ---------- Utilities ---------- */
+    const qs = (s, el = document) => el.querySelector(s);
+    const qsa = (s, el = document) => Array.from(el.querySelectorAll(s));
+
+    // set year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    /* ---------- Smooth scroll for nav buttons ---------- */
+    qsa('button[data-scroll]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-scroll');
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    // hero learn-more
+    qs('#learn-more').addEventListener('click', () => document.getElementById('features').scrollIntoView({behavior:'smooth'}));
+    // CTA buttons scroll to top (placeholder for buy)
+    qsa('#hero-cta, #buy-cta, #final-cta').forEach(b => {
+      b.addEventListener('click', () => {
+        // placeholder behaviour: scroll to top & flash
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        b.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-6px)' }, { transform: 'translateY(0)' }], { duration: 300, easing: 'ease-out' });
+      });
+    });
+
+    /* ---------- Cursor Parallax & Product Tilt ---------- */
+    (function productParallax(){
+      const stage = qs('#product-card');
+      const glow = qs('#glow');
+      let width = window.innerWidth, height = window.innerHeight;
+      let mouseX = 0, mouseY = 0;
+      window.addEventListener('resize', () => { width = window.innerWidth; height = window.innerHeight; });
+
+      // small smoothing for the effect
+      let lx = 0, ly = 0;
+      function raf(){
+        lx += (mouseX - lx) * 0.12;
+        ly += (mouseY - ly) * 0.12;
+
+        // tilt based on normalized
+        const nx = (lx / width - 0.5) * 2; // -1 .. 1
+        const ny = (ly / height - 0.5) * 2;
+        const rY = nx * 10; // deg
+        const rX = -ny * 8;
+        const translateX = nx * 6;
+        const translateY = ny * 8;
+
+        if(stage) stage.style.transform = `perspective(900px) rotateX(${rX}deg) rotateY(${rY}deg) translate3d(${translateX}px, ${translateY}px, 0)`;
+        if(glow) glow.style.transform = `translate3d(${translateX * 1.6}px, ${translateY * 1.2}px, 0) scale(1.05)`;
+
+        requestAnimationFrame(raf);
+      }
+      raf();
+
+      // update mouse pos
+      document.addEventListener('pointermove', (e) => {
+        mouseX = e.clientX; mouseY = e.clientY;
+      }, {passive:true});
+      // small parallax on scroll (background feel)
+      window.addEventListener('scroll', () => {
+        const s = window.scrollY / 2;
+        if(stage) stage.style.filter = `brightness(${1 - Math.min(0.25, window.scrollY/1200)})`;
+      }, {passive:true});
+    })();
+
+    /* ---------- Subtle tilt on feature cards based on pointer position ---------- */
+    (function featureTilt(){
+      const cards = qsa('[data-tilt]');
+      cards.forEach(card => {
+        let rect;
+        card.addEventListener('pointermove', (e) => {
+          rect = card.getBoundingClientRect();
+          const cx = rect.left + rect.width/2;
+          const cy = rect.top + rect.height/2;
+          const dx = e.clientX - cx;
+          const dy = e.clientY - cy;
+          const rx = (-dy / rect.height) * 6; // tilt x
+          const ry = (dx / rect.width) * 6;   // tilt y
+          card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(6px)`;
+          card.style.boxShadow = `${-ry*3}px ${rx*3+10}px 30px rgba(2,18,56,0.6)`;
+        });
+        card.addEventListener('pointerleave', () => {
+          card.style.transform = '';
+          card.style.boxShadow = '';
+        });
+      });
+    })();
+
+    /* ---------- Reveal on scroll (IntersectionObserver) ---------- */
+    (function revealOnScroll(){
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if(e.isIntersecting){
+            e.target.style.transition = 'transform 700ms var(--ease), opacity 700ms var(--ease)';
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.opacity = '1';
+            observer.unobserve(e.target);
+          }
+        });
+      }, {threshold:0.12});
+      // initial state
+      qsa('.feature, .review, .step').forEach(el => {
+        el.style.transform = 'translateY(18px)';
+        el.style.opacity = '0';
+        observer.observe(el);
+      });
+    })();
+
+    /* ---------- Keyboard accessibility: focus outlines ---------- */
+    (function accessibilityFocus(){
+      function handleFirstTab(e){
+        if(e.key === 'Tab'){
+          document.documentElement.classList.add('show-focus');
+          window.removeEventListener('keydown', handleFirstTab);
+        }
+      }
+      window.addEventListener('keydown', handleFirstTab);
+    })();
+
+    /* ---------- Lightweight auto-carousel for reviews (optional) ---------- */
+    (function reviewsCarousel(){
+      const grid = qs('.review-grid');
+      if(!grid) return;
+      let idx = 0;
+      const items = Array.from(grid.children);
+      if(items.length <= 1) return;
+      setInterval(() => {
+        items.forEach((it,i)=> it.style.display = (i===idx ? 'block':'none'));
+        idx = (idx+1) % items.length;
+      }, 4200);
+    })();
+
+  </script>
+</body>
+</html>
